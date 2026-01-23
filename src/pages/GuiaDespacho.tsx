@@ -1,0 +1,352 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/hooks/use-toast'
+import { generateGuiaDespachoPDF } from '@/lib/pdf-generator'
+
+export default function GuiaDespacho() {
+  const navigate = useNavigate()
+  const { toast } = useToast()
+  const [formData, setFormData] = useState({
+    // Access Point y Equipos
+    accessPoint: '',
+    serieAccessPoint: '',
+    dongle: '',
+    modeloBAM: '',
+    compania: '',
+    cpuModelo: '',
+    impresoraSN: '',
+    botonSN: '',
+    condicion: '',
+    estructuraMetalica: '',
+    licencia: '',
+    bamTelefono: '',
+    cpuSerie: '',
+    impresoraModelo: '',
+    pantallaSN: '',
+    // Datos de Recepción
+    nombreReceptor: '',
+    rutReceptor: '',
+    direccion: '',
+    telefono: ''
+  })
+
+  const handleGeneratePDF = async () => {
+    // Validaciones
+    const camposFaltantes = []
+    
+    // Sección Access Point
+    if (!formData.accessPoint) camposFaltantes.push('Access Point')
+    if (!formData.serieAccessPoint) camposFaltantes.push('N° de serie Access Point')
+    
+    // Datos de Recepción
+    if (!formData.nombreReceptor) camposFaltantes.push('Nombre del receptor')
+    if (!formData.rutReceptor) camposFaltantes.push('RUT del receptor')
+    if (!formData.direccion) camposFaltantes.push('Dirección')
+    if (!formData.telefono) camposFaltantes.push('Teléfono')
+    
+    // Validar selectores
+    if (!formData.condicion) camposFaltantes.push('Condición del equipo')
+    if (!formData.modeloBAM) camposFaltantes.push('Modelo de BAM')
+    
+    if (camposFaltantes.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Campos obligatorios faltantes",
+        description: `Por favor completa: ${camposFaltantes.join(', ')}`,
+      })
+      return
+    }
+    
+    try {
+      await generateGuiaDespachoPDF(formData)
+      toast({
+        title: "PDF generado exitosamente",
+        description: `Guía de despacho para ${formData.accessPoint} creada correctamente`,
+      })
+    } catch (error) {
+      console.error('Error al generar PDF:', error)
+      toast({
+        variant: "destructive",
+        title: "Error al generar PDF",
+        description: "Por favor, intenta nuevamente.",
+      })
+    }
+  }
+
+  return (
+    <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-black">
+      <div className="max-w-7xl mx-auto">
+        {/* Logo superior izquierda */}
+        <div className="mb-6">
+          <div className="mb-4">
+            <img 
+              src="/alertPlus.png" 
+              alt="Alert Plus" 
+              className="h-12 w-auto"
+              style={{ filter: theme === 'dark' ? 'drop-shadow(0 0 8px #DC2626)' : 'none' }}
+            />
+          </div>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/')}
+            className="border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-red-600 dark:text-white dark:hover:bg-red-900"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Volver al menú
+          </Button>
+        </div>
+
+        {/* Título principal */}
+        <div className="mb-6 border border-gray-200 bg-white rounded-lg p-6 dark:border-red-600 dark:bg-black">
+          <h1 className="text-3xl font-bold text-red-600 dark:text-red-500">Guías de Despacho</h1>
+        </div>
+
+        <Card className="border border-gray-200 dark:border-red-600 bg-white dark:bg-black">
+          <CardHeader className="space-y-0 p-0">
+            <div className="bg-red-600 text-white pl-8 pr-4 py-4 rounded-t-[12px]">
+              <h2 className="text-lg font-bold">Alert Plus</h2>
+              <p className="text-sm font-normal">Solicitud de Guía de Despacho</p>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-6 pt-6">
+            {/* Sección 1: Access Point y Equipos */}
+            <div className="space-y-4">
+              <h3 className="text-base font-bold border-b-2 border-gray-800 pb-2">1. Access Point y Equipos</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="accessPoint" className="text-xs dark:text-white">Access Point (APxx)</Label>
+                  <Input
+                    id="accessPoint"
+                    placeholder="Ej: AP001, APT23"
+                    className="border-gray-300 dark:border-red-600 bg-white dark:bg-black text-gray-900 dark:text-white"
+                    value={formData.accessPoint}
+                    onChange={(e) => setFormData({ ...formData, accessPoint: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="condicion" className="text-xs dark:text-white">Condición</Label>
+                  <select
+                    id="condicion"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.condicion}
+                    onChange={(e) => setFormData({ ...formData, condicion: e.target.value })}
+                  >
+                    <option value="">Seleccionar condición...</option>
+                    <option value="nuevo">Nuevo</option>
+                    <option value="usado">Usado</option>
+                    <option value="reparado">Reparado</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="serieAccessPoint" className="text-xs dark:text-white">N° de serie Access Point</Label>
+                  <Input
+                    id="serieAccessPoint"
+                    placeholder="Ej: 732000000520"
+                    className="border-gray-300 dark:border-red-600 bg-white dark:bg-black text-gray-900 dark:text-white"
+                    value={formData.serieAccessPoint}
+                    onChange={(e) => setFormData({ ...formData, serieAccessPoint: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="estructuraMetalica" className="text-xs dark:text-white">Estructura metálica</Label>
+                  <select
+                    id="estructuraMetalica"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.estructuraMetalica}
+                    onChange={(e) => setFormData({ ...formData, estructuraMetalica: e.target.value })}
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="dongle" className="text-xs dark:text-white">Dongle</Label>
+                  <Input
+                    id="dongle"
+                    placeholder="TDC2-XXXX ó TDC3-XXXX"
+                    value={formData.dongle}
+                    onChange={(e) => setFormData({ ...formData, dongle: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="licencia" className="text-xs dark:text-white">Licencia</Label>
+                  <Input
+                    id="licencia"
+                    placeholder="W0000X_XXX"
+                    value={formData.licencia}
+                    onChange={(e) => setFormData({ ...formData, licencia: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="modeloBAM" className="text-xs dark:text-white">MODELO DE BAM</Label>
+                  <select
+                    id="modeloBAM"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.modeloBAM}
+                    onChange={(e) => setFormData({ ...formData, modeloBAM: e.target.value })}
+                  >
+                    <option value="">Seleccionar modelo...</option>
+                    <option value="bam_v1">BAM V1</option>
+                    <option value="bam_v2">BAM V2</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bamTelefono" className="text-xs dark:text-white">Bam - Número telefónico</Label>
+                  <Input
+                    id="bamTelefono"
+                    placeholder="Ej: +56 9 1234 5678"
+                    value={formData.bamTelefono}
+                    onChange={(e) => setFormData({ ...formData, bamTelefono: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="compania" className="text-xs dark:text-white">COMPAÑÍA</Label>
+                  <select
+                    id="compania"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.compania}
+                    onChange={(e) => setFormData({ ...formData, compania: e.target.value })}
+                  >
+                    <option value="">Seleccionar compañía...</option>
+                    <option value="entel">Entel</option>
+                    <option value="movistar">Movistar</option>
+                    <option value="claro">Claro</option>
+                    <option value="wom">WOM</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cpuSerie" className="text-xs dark:text-white">CPU - Numero de serie</Label>
+                  <Input
+                    id="cpuSerie"
+                    placeholder="BTTN31400414"
+                    value={formData.cpuSerie}
+                    onChange={(e) => setFormData({ ...formData, cpuSerie: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cpuModelo" className="text-xs dark:text-white">CPU - Modelo (NUC con Windows 11)</Label>
+                  <Input
+                    id="cpuModelo"
+                    placeholder="Ej: Intel NUC 11"
+                    value={formData.cpuModelo}
+                    onChange={(e) => setFormData({ ...formData, cpuModelo: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="impresoraModelo" className="text-xs dark:text-white">Impresora - Modelo</Label>
+                  <select
+                    id="impresoraModelo"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.impresoraModelo}
+                    onChange={(e) => setFormData({ ...formData, impresoraModelo: e.target.value })}
+                  >
+                    <option value="">Seleccionar modelo...</option>
+                    <option value="epson_tm_t20ii">Epson TM-T20II</option>
+                    <option value="epson_tm_t88v">Epson TM-T88V</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="impresoraSN" className="text-xs dark:text-white">Impresora - S/N</Label>
+                  <Input
+                    id="impresoraSN"
+                    placeholder="S/N (incluye cables)"
+                    value={formData.impresoraSN}
+                    onChange={(e) => setFormData({ ...formData, impresoraSN: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pantallaSN" className="text-xs dark:text-white">Pantalla táctil - S/N</Label>
+                  <Input
+                    id="pantallaSN"
+                    placeholder="N° de serie pantalla"
+                    value={formData.pantallaSN}
+                    onChange={(e) => setFormData({ ...formData, pantallaSN: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="botonSN" className="text-xs dark:text-white">Botón - S/N</Label>
+                  <Input
+                    id="botonSN"
+                    placeholder="N° de serie botón INTERINO APXXXX"
+                    value={formData.botonSN}
+                    onChange={(e) => setFormData({ ...formData, botonSN: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Sección 2: Datos de Recepción */}
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-base font-bold">Datos de Recepción</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="nombreReceptor" className="text-xs dark:text-white">Nombre</Label>
+                  <Input
+                    id="nombreReceptor"
+                    placeholder="Nombre completo del receptor"
+                    value={formData.nombreReceptor}
+                    onChange={(e) => setFormData({ ...formData, nombreReceptor: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="rutReceptor" className="text-xs dark:text-white">RUT</Label>
+                  <Input
+                    id="rutReceptor"
+                    placeholder="Ej: 12.345.678-9"
+                    value={formData.rutReceptor}
+                    onChange={(e) => setFormData({ ...formData, rutReceptor: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="direccion" className="text-xs dark:text-white">Dirección</Label>
+                  <Input
+                    id="direccion"
+                    placeholder="Dirección completa de entrega"
+                    value={formData.direccion}
+                    onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="telefono" className="text-xs dark:text-white">Teléfono</Label>
+                  <Input
+                    id="telefono"
+                    placeholder="+569"
+                    value={formData.telefono}
+                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center pt-4">
+              <Button 
+                onClick={handleGeneratePDF} 
+                size="lg"
+                className="w-full md:w-auto bg-gray-400 hover:bg-gray-500"
+              >
+                Generar PDF
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
