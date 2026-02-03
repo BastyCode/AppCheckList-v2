@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -77,7 +77,7 @@ export default function CheckList() {
     // Validaciones
     const camposFaltantes = []
     
-    if (!formData.empresa) camposFaltantes.push('Empresa')
+
     if (!formData.nombreEmpresa) camposFaltantes.push('Nombre de empresa')
     if (!formData.equipo) camposFaltantes.push('Equipo')
     if (!formData.tecnico) camposFaltantes.push('Técnico')
@@ -202,12 +202,25 @@ export default function CheckList() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="responsableEmpresa" className="text-sm font-normal text-gray-700 dark:text-white">Empresa</Label>
-                  <Input
+                  <select
                     id="responsableEmpresa"
-                    value="AlertPlus"
-                    disabled
-                    className="bg-gray-100 dark:bg-black border-gray-300 dark:border-red-600 text-gray-700 dark:text-white"
-                  />
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.responsableEmpresa}
+                    onChange={(e) => {
+                      const nuevaEmpresa = e.target.value
+                      setFormData({
+                        ...formData,
+                        responsableEmpresa: nuevaEmpresa,
+                        // Resetear técnico al cambiar de empresa
+                        tecnico: '',
+                        nombreTecnico: '',
+                        firmaTecnico: ''
+                      })
+                    }}
+                  >
+                    <option value="AlertPlus">AlertPlus</option>
+                    <option value="Praveni">Praveni</option>
+                  </select>
                 </div>
 
                 <div className="space-y-2">
@@ -219,34 +232,77 @@ export default function CheckList() {
                     onChange={(e) => handleTecnicoChange(e.target.value)}
                   >
                     <option value="">Elige el tecnico</option>
-                    {TECNICOS.map((tec) => (
-                      <option key={tec.nombre} value={tec.nombre}>
-                        {tec.nombre}
-                      </option>
-                    ))}
+                    {formData.responsableEmpresa === 'AlertPlus' ? (
+                      TECNICOS.map((tec) => (
+                        <option key={tec.nombre} value={tec.nombre}>
+                          {tec.nombre}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="Jeffry Flores">Jeffry Flores</option>
+                    )}
                   </select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="firmaTecnico" className="text-sm font-normal text-gray-700 dark:text-white">Firma técnico</Label>
+                  {/* Lógica para subir firma si es Praveni/Jeffry */}
+                  {formData.responsableEmpresa === 'Praveni' && formData.tecnico === 'Jeffry Flores' && !formData.firmaTecnico && (
+                    <div className="mb-2">
+                       <label className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-red-600 rounded-md p-4 bg-gray-50/50 dark:bg-black hover:bg-gray-100 dark:hover:bg-red-900/10 transition-colors">
+                        <Upload className="h-6 w-6 text-gray-500 dark:text-red-500 mb-2" />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Haz click para subir la firma
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          (Formatos: JPG, PNG)
+                        </span>
+                         <input 
+                          type="file" 
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              const reader = new FileReader()
+                              reader.onload = (event) => {
+                                const result = event.target?.result as string
+                                if (result) {
+                                  setFormData(prev => ({ ...prev, firmaTecnico: result }))
+                                }
+                              }
+                              reader.readAsDataURL(file)
+                            }
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+
                   {formData.firmaTecnico ? (
-                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex items-center justify-center h-20">
+                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex flex-col items-center justify-center h-24 relative">
                       <img 
                         src={formData.firmaTecnico} 
                         alt="Firma" 
                         className="max-h-16 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none'
-                          const parent = (e.target as HTMLElement).parentElement
-                          if (parent) {
-                            parent.innerHTML = '<span class="text-xs font-semibold text-red-700 bg-red-100 rounded px-2 py-1">Imagen de firma no encontrada</span>'
-                          }
-                        }}
                       />
+                      {/* Botón para borrar firma si es manual */}
+                      {formData.responsableEmpresa === 'Praveni' && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-1 right-1 h-6 w-6 p-0"
+                          onClick={() => setFormData(prev => ({ ...prev, firmaTecnico: '' }))}
+                        >
+                          X
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex items-center justify-center h-20">
-                      <span className="text-xs text-gray-500 dark:text-white">Selecciona un técnico</span>
+                      <span className="text-xs text-gray-500 dark:text-white">
+                        {formData.responsableEmpresa === 'Praveni' ? 'Sube la firma' : 'Selecciona un técnico'}
+                      </span>
                     </div>
                   )}
                 </div>

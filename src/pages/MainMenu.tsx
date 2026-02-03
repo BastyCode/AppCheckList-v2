@@ -31,22 +31,22 @@ export default function MainMenu() {
           <img 
             src="/alertPlus.png" 
             alt="Alert Plus" 
-            className="h-40 w-auto"
-            style={{ filter: theme === 'dark' ? 'drop-shadow(0 0 8px #DC2626)' : 'none' }}
+            className="h-60 w-auto"
+            style={{ filter: theme === 'dark' ? 'drop-shadow(0 2 8px #DC2626)' : 'none' }}
           />
         </div>
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Organizaciones + alertas</h1>
       </div>
 
       {/* Cards de opciones */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl w-full">
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
+          className="cursor-pointer transition-all duration-300 hover:border-red-600 dark:hover:border-white hover:shadow-md hover:shadow-red-500/20 hover:scale-[1.005] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
           onClick={() => navigate('/checklist')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="flex items-center justify-center bg-orange-50 dark:bg-red-900 rounded-xl" style={{ width: '96px', height: '96px' }}>
+              <div className="flex items-center justify-center bg-orange-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
                 <img src="/icons/clipboard.svg" alt="CheckList Icon" className="h-16 w-16" />
               </div>
             </div>
@@ -60,12 +60,12 @@ export default function MainMenu() {
         </Card>
 
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
+          className="cursor-pointer transition-all duration-300 hover:border-red-600 dark:hover:border-white hover:shadow-md hover:shadow-red-500/20 hover:scale-[1.005] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
           onClick={() => navigate('/guia-despacho')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="flex items-center justify-center bg-amber-50 dark:bg-red-900 rounded-xl" style={{ width: '96px', height: '96px' }}>
+              <div className="flex items-center justify-center bg-amber-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
                 <img src="/icons/box_document.svg" alt="Box Document Icon" className="h-24 w-24" />
               </div>
             </div>
@@ -79,12 +79,12 @@ export default function MainMenu() {
         </Card>
 
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border border-gray-200 dark:border-red-600 bg-white dark:bg-black col-span-1 md:col-span-2 lg:col-span-1"
+          className="cursor-pointer transition-all duration-300 hover:border-red-600 dark:hover:border-white hover:shadow-md hover:shadow-red-500/20 hover:scale-[1.005] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
           onClick={() => navigate('/informes')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
-              <div className="flex items-center justify-center bg-blue-50 dark:bg-red-900 rounded-xl" style={{ width: '96px', height: '96px' }}>
+              <div className="flex items-center justify-center bg-blue-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
                 <img src="/icons/clipboard.svg" alt="Informes Icon" className="h-16 w-16" />
               </div>
             </div>

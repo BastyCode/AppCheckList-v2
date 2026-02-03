@@ -1,15 +1,23 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { generateGuiaDespachoPDF } from '@/lib/pdf-generator'
+import { useTheme } from '@/components/theme-provider'
+
+const TECNICOS = [
+  { nombre: 'Christian Torrens', firma: '/firmas/firma_christian_torrens.jpeg' },
+  { nombre: 'Jerson Armijo', firma: '/firmas/firma_jerson_armijo.jpeg' },
+  { nombre: 'Bastian Jimenez', firma: '/firmas/firma_bastian_jimenez.jpeg' },
+]
 
 export default function GuiaDespacho() {
   const navigate = useNavigate()
+  const { theme } = useTheme()
   const { toast } = useToast()
   const [formData, setFormData] = useState({
     // Access Point y Equipos
@@ -32,8 +40,25 @@ export default function GuiaDespacho() {
     nombreReceptor: '',
     rutReceptor: '',
     direccion: '',
-    telefono: ''
+    telefono: '',
+    // Datos Responsable
+    empresa: '', // Para cumplir con la interfaz (Cliente)
+    responsableEmpresa: 'AlertPlus',
+    nombreTecnico: '',
+    tecnico: '',
+    firmaTecnico: ''
   })
+
+  // Función para convertir archivo a Base64
+  const handleTecnicoChange = (tecnicoNombre: string) => {
+    const tecnico = TECNICOS.find(t => t.nombre === tecnicoNombre)
+    setFormData({
+      ...formData,
+      tecnico: tecnicoNombre,
+      nombreTecnico: tecnicoNombre,
+      firmaTecnico: tecnico?.firma || ''
+    })
+  }
 
   const handleGeneratePDF = async () => {
     // Validaciones
@@ -63,7 +88,7 @@ export default function GuiaDespacho() {
     }
     
     try {
-      await generateGuiaDespachoPDF(formData)
+      await generateGuiaDespachoPDF({ ...formData, fecha: new Date().toLocaleDateString('es-CL') })
       toast({
         title: "PDF generado exitosamente",
         description: `Guía de despacho para ${formData.accessPoint} creada correctamente`,
@@ -287,6 +312,120 @@ export default function GuiaDespacho() {
                     value={formData.botonSN}
                     onChange={(e) => setFormData({ ...formData, botonSN: e.target.value })}
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Sección Responsable */}
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-base font-bold">Datos del Responsable</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="responsableEmpresa" className="text-xs dark:text-white">Empresa</Label>
+                  <select
+                    id="responsableEmpresa"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.responsableEmpresa}
+                    onChange={(e) => {
+                      const nuevaEmpresa = e.target.value
+                      setFormData({
+                        ...formData,
+                        responsableEmpresa: nuevaEmpresa,
+                        // Resetear técnico al cambiar de empresa
+                        tecnico: '',
+                        nombreTecnico: '',
+                        firmaTecnico: ''
+                      })
+                    }}
+                  >
+                    <option value="AlertPlus">AlertPlus</option>
+                    <option value="Praveni">Praveni</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tecnico" className="text-xs dark:text-white">Nombre técnico</Label>
+                  <select
+                    id="tecnico"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    value={formData.tecnico}
+                    onChange={(e) => handleTecnicoChange(e.target.value)}
+                  >
+                    <option value="">Elige el tecnico</option>
+                    {formData.responsableEmpresa === 'AlertPlus' ? (
+                      TECNICOS.map((tec) => (
+                        <option key={tec.nombre} value={tec.nombre}>
+                          {tec.nombre}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="Jeffry Flores">Jeffry Flores</option>
+                    )}
+                  </select>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="firmaTecnico" className="text-xs dark:text-white">Firma técnico</Label>
+                  {/* Lógica para subir firma si es Praveni/Jeffry */}
+                  {formData.responsableEmpresa === 'Praveni' && formData.tecnico === 'Jeffry Flores' && !formData.firmaTecnico && (
+                    <div className="mb-2">
+                       <label className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-red-600 rounded-md p-4 bg-gray-50/50 dark:bg-black hover:bg-gray-100 dark:hover:bg-red-900/10 transition-colors">
+                        <Upload className="h-6 w-6 text-gray-500 dark:text-red-500 mb-2" />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Haz click para subir la firma
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          (Formatos: JPG, PNG)
+                        </span>
+                         <input 
+                          type="file" 
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              const reader = new FileReader()
+                              reader.onload = (event) => {
+                                const result = event.target?.result as string
+                                if (result) {
+                                  setFormData(prev => ({ ...prev, firmaTecnico: result }))
+                                }
+                              }
+                              reader.readAsDataURL(file)
+                            }
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+
+                  {formData.firmaTecnico ? (
+                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex flex-col items-center justify-center h-24 relative">
+                      <img 
+                        src={formData.firmaTecnico} 
+                        alt="Firma" 
+                        className="max-h-16 object-contain"
+                      />
+                      {/* Botón para borrar firma si es manual */}
+                      {formData.responsableEmpresa === 'Praveni' && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-1 right-1 h-6 w-6 p-0"
+                          onClick={() => setFormData(prev => ({ ...prev, firmaTecnico: '' }))}
+                        >
+                          X
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex items-center justify-center h-20">
+                      <span className="text-xs text-gray-500 dark:text-white">
+                        {formData.responsableEmpresa === 'Praveni' ? 'Sube la firma' : 'Selecciona un técnico'}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
