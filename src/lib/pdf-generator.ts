@@ -293,3 +293,131 @@ export async function generateGuiaDespachoPDF(data: GuiaDespachoData) {
   
   doc.save(`GuiaDespacho_${data.accessPoint}.pdf`)
 }
+
+export async function generateInformePDF(data: CheckListData) {
+  const doc = new jsPDF()
+  
+  const redColor: [number, number, number] = [220, 38, 38]
+  const blackColor: [number, number, number] = [0, 0, 0]
+  const whiteColor: [number, number, number] = [255, 255, 255]
+  
+  let yPos = 20
+
+  // Agregar imagen curva decorativa si existe
+  try {
+    const curvaImg = await getImageBase64('/curvapdf.png')
+    // Imagen en la parte superior derecha como decoración
+    doc.addImage(curvaImg, 'PNG', 150, 5, 50, 30)
+  } catch (error) {
+    console.log('Curva PDF no encontrada, continuando sin ella')
+  }
+
+  // Logo Alert Plus
+  try {
+    const logoImg = await getImageBase64('/alertPlus.png')
+    doc.addImage(logoImg, 'PNG', 20, yPos, 40, 15)
+    yPos += 20
+  } catch (error) {
+    doc.setFontSize(16)
+    doc.setTextColor(...redColor)
+    doc.text('Alert Plus', 20, yPos)
+    yPos += 15
+  }
+  
+  // Header rojo
+  doc.setFillColor(...redColor)
+  doc.rect(20, yPos, 170, 15, 'F')
+  doc.setFontSize(12)
+  doc.setTextColor(...whiteColor)
+  doc.text('SERVICIO TÉCNICO', 25, yPos + 10)
+  
+  yPos += 25
+
+  // Sección Identificación Equipo
+  doc.setFontSize(11)
+  doc.setTextColor(...blackColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text('Identificación Equipo', 20, yPos)
+  doc.text('Responsable', 110, yPos)
+  
+  yPos += 8
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  
+  // Columna izquierda
+  doc.text(`Empresa: ${data.empresa}`, 20, yPos)
+  doc.text(`Empresa: ${data.responsableEmpresa}`, 110, yPos)
+  yPos += 6
+  doc.text(`Nombre de empresa: ${data.nombreEmpresa}`, 20, yPos)
+  doc.text(`Nombre técnico: ${data.nombreTecnico}`, 110, yPos)
+  yPos += 6
+  doc.text(`Equipo: ${data.equipo}`, 20, yPos)
+  doc.text(`Técnico: ${data.tecnico}`, 110, yPos)
+  yPos += 6
+  doc.text(`Fecha: ${data.fecha}`, 20, yPos)
+  
+  // Agregar firma si existe
+  if (data.firmaTecnico) {
+    yPos += 2
+    doc.text('Firma:', 110, yPos)
+    
+    try {
+      const firmaBase64 = await getImageBase64(data.firmaTecnico)
+      doc.addImage(firmaBase64, 'PNG', 110, yPos + 2, 35, 12)
+      yPos += 14
+    } catch (error) {
+      console.error('Error al cargar firma:', error)
+      yPos += 6
+    }
+  } else {
+    yPos += 6
+  }
+  
+  yPos += 12
+  doc.setDrawColor(...redColor)
+  doc.line(20, yPos, 190, yPos)
+  
+  // Detalle Informe
+  yPos += 10
+  doc.setFontSize(11)
+  doc.setFont('helvetica', 'bold')
+  doc.text('Detalle Informe', 20, yPos)
+  
+  yPos += 8
+  doc.setFontSize(8)
+  
+  // Tabla
+  doc.text('N°', 22, yPos)
+  doc.text('Descripción', 32, yPos)
+  doc.text('Estado', 165, yPos)
+  yPos += 2
+  doc.setDrawColor(...redColor)
+  doc.line(20, yPos, 190, yPos)
+  
+  yPos += 5
+  doc.setFont('helvetica', 'normal')
+  
+  data.items.forEach((item) => {
+    if (yPos > 270) {
+      doc.addPage()
+      yPos = 20
+    }
+    
+    doc.text(`${item.id}`, 22, yPos)
+    const splitText = doc.splitTextToSize(item.nombre, 130)
+    doc.text(splitText, 32, yPos)
+    
+    if (item.estado === 'realizado') {
+      doc.setTextColor(0, 150, 0)
+      doc.text('✓ Realizado', 165, yPos)
+    } else {
+      doc.setTextColor(255, 140, 0)
+      doc.text('Pendiente', 165, yPos)
+    }
+    doc.setTextColor(...blackColor)
+    
+    yPos += Math.max(6, splitText.length * 4)
+  })
+  
+  doc.save(`Informe_${data.equipo}_${data.fecha}.pdf`)
+}

@@ -77,6 +77,25 @@ export default function MainMenu() {
             </CardDescription>
           </CardContent>
         </Card>
+
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border border-gray-200 dark:border-red-600 bg-white dark:bg-black col-span-1 md:col-span-2 lg:col-span-1"
+          onClick={() => navigate('/informes')}
+        >
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center bg-blue-50 dark:bg-red-900 rounded-xl" style={{ width: '96px', height: '96px' }}>
+                <img src="/icons/clipboard.svg" alt="Informes Icon" className="h-16 w-16" />
+              </div>
+            </div>
+            <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">Informes</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center pt-0">
+            <CardDescription className="text-sm text-gray-600 dark:text-gray-200">
+              Generación de informes técnicos
+            </CardDescription>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
