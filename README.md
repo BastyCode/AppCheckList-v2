@@ -1,4 +1,4 @@
-# AppCheckList v2
+# AppCheckList
 
 Aplicación Web para la gestión de CheckLists de equipos, Informes Técnicos y Guías de Despacho.
 
