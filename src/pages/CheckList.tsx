@@ -13,9 +13,9 @@ import { useTheme } from '@/components/theme-provider'
 type ItemStatus = 'pendiente' | 'realizado'
 
 const TECNICOS = [
-  { nombre: 'Christian Torrens', firma: '/firmas/firma_christian_torrens.jpeg' },
-  { nombre: 'Jerson Armijo', firma: '/firmas/firma_jerson_armijo.jpeg' },
-  { nombre: 'Bastian Jimenez', firma: '/firmas/firma_bastian_jimenez.jpeg' },
+  { nombre: 'Christian Torrens', firma: `${import.meta.env.BASE_URL}firmas/firma_christian_torrens.jpeg` },
+  { nombre: 'Jerson Armijo', firma: `${import.meta.env.BASE_URL}firmas/firma_jerson_armijo.jpeg` },
+  { nombre: 'Bastian Jimenez', firma: `${import.meta.env.BASE_URL}firmas/firma_bastian_jimenez.jpeg` },
 ]
 
 export default function CheckList() {
@@ -109,7 +109,7 @@ export default function CheckList() {
         <div className="mb-6">
           <div className="mb-4">
             <img 
-              src="/alertPlus.png" 
+              src={`${import.meta.env.BASE_URL}alertPlus.png`} 
               alt="Alert Plus" 
               className="h-12 w-auto"
               style={{ filter: theme === 'dark' ? 'drop-shadow(0 0 8px #DC2626)' : 'none' }}

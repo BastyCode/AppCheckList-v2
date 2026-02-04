@@ -29,7 +29,7 @@ export default function MainMenu() {
       <div className="text-center mb-12">
         <div className="flex items-center justify-center mb-8">
           <img 
-            src="/alertPlus.png" 
+            src={`${import.meta.env.BASE_URL}alertPlus.png`} 
             alt="Alert Plus" 
             className="h-60 w-auto"
             style={{ filter: theme === 'dark' ? 'drop-shadow(0 2 8px #DC2626)' : 'none' }}
@@ -47,7 +47,7 @@ export default function MainMenu() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
               <div className="flex items-center justify-center bg-orange-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
-                <img src="/icons/clipboard.svg" alt="CheckList Icon" className="h-16 w-16" />
+                <img src={`${import.meta.env.BASE_URL}icons/clipboard.svg`} alt="CheckList Icon" className="h-16 w-16" />
               </div>
             </div>
             <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">CheckList Final</CardTitle>
@@ -66,7 +66,7 @@ export default function MainMenu() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
               <div className="flex items-center justify-center bg-amber-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
-                <img src="/icons/box_document.svg" alt="Box Document Icon" className="h-24 w-24" />
+                <img src={`${import.meta.env.BASE_URL}icons/box_document.svg`} alt="Box Document Icon" className="h-24 w-24" />
               </div>
             </div>
             <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">Guías de Despacho</CardTitle>
@@ -86,7 +86,7 @@ export default function MainMenu() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
               <div className="flex items-center justify-center bg-blue-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
-                <img src="/icons/clipboard.svg" alt="Informes Icon" className="h-16 w-16" />
+                <img src={`${import.meta.env.BASE_URL}icons/clipboard.svg`} alt="Informes Icon" className="h-16 w-16" />
               </div>
             </div>
             <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">Informes</CardTitle>
@@ -105,7 +105,7 @@ export default function MainMenu() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-center mb-4">
               <div className="flex items-center justify-center bg-orange-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
-                <img src="/icons/clipboard.svg" alt="Certificados Icon" className="h-16 w-16 text-orange-500" />
+                <img src={`${import.meta.env.BASE_URL}icons/clipboard.svg`} alt="Certificados Icon" className="h-16 w-16 text-orange-500" />
               </div>
             </div>
             <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">Certificados AccessPoint</CardTitle>
