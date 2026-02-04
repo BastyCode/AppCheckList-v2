@@ -2,17 +2,11 @@
   "name": "appchecklist-v2",
   "version": "2.0.0",
   "description": "Aplicación de CheckList y Guías de Despacho",
-  "main": "dist-electron/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
-    "build:win": "npm run build -- --win",
-    "build:mac": "npm run build -- --mac",
-    "build:linux": "npm run build -- --linux",
-    "preview": "vite preview",
-    "electron:dev": "tsc && vite build && electron .",
-    "electron:build": "electron-builder"
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -44,48 +38,12 @@
     "@typescript-eslint/parser": "^8.54.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
-    "electron": "^40.1.0",
-    "electron-builder": "^26.7.0",
     "eslint": "^9.39.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "vite": "^7.3.1",
-    "vite-plugin-electron": "^0.28.2",
-    "vite-plugin-electron-renderer": "^0.14.5"
-  },
-  "build": {
-    "appId": "com.appchecklist.v2",
-    "productName": "AppCheckList",
-    "directories": {
-      "output": "release/${version}"
-    },
-    "files": [
-      "dist/**/*",
-      "dist-electron/**/*"
-    ],
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
-      "icon": "public/icon.png"
-    },
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "icon": "public/icon.png"
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "icon": "public/icon.png"
-    }
+    "vite": "^7.3.1"
   }
 }

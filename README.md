@@ -1,30 +1,36 @@
 # AppCheckList v2
 
-Aplicación de escritorio para gestión de CheckLists de equipos y Guías de Despacho.
+Aplicación Web para la gestión de CheckLists de equipos, Informes Técnicos y Guías de Despacho.
+
+> **Nota**: Este proyecto comenzó como una aplicación de escritorio (Electron), pero ha evolucionado a una **Aplicación Web** estándar. Se han eliminado los componentes de escritorio para optimizar el rendimiento y la mantenibilidad.
 
 ## Características
 
-- ✅ **CheckList de Equipos**: Crea y gestiona listas de verificación con generación de PDF
-- 📄 **Guía de Despacho**: Genera guías de despacho profesionales en PDF
-- 🎨 **Temas Claro/Oscuro**: Cambia entre modo claro y oscuro
-- 🖥️ **Multiplataforma**: Builds para Windows, macOS y Linux
-- ⚡ **Tecnologías Modernas**: React + TypeScript + Electron + Vite + shadcn/ui
+- ✅ **CheckList de Equipos**: Listas de verificación interactivas para validación técnica.
+- 📄 **Guía de Despacho**: Generación de documentos de traslado.
+- 📝 **Informes Técnicos**: Creación de informes detallados con evidencia fotográfica.
+- 📜 **Certificados**: Emisión de certificados de operatividad de Access Points.
+- 🎨 **Temas Claro/Oscuro**: Interfaz adaptable con estética moderna (Rojo/Negro/Blanco).
+- � **Responsiva**: Funciona en tablets, laptops y desktop.
+- ⚡ **Tecnologías**: React + TypeScript + Vite + TailwindCSS + shadcn/ui.
 
 ## Colores del Tema
 
 ### Modo Claro (Predeterminado)
+
 - Fondo: Blanco
 - Botones y detalles: Rojo (#DC2626)
 - Texto: Negro
 
 ### Modo Oscuro
+
 - Fondo: Negro
 - Botones y detalles: Rojo (#DC2626)
 - Texto: Blanco
 
 ## Requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm o yarn
 
 ## Instalación
@@ -36,73 +42,49 @@ npm install
 
 ## Desarrollo
 
+Para iniciar el servidor de desarrollo local:
+
 ```bash
-# Iniciar en modo desarrollo
+# Iniciar aplicación web
 npm run dev
 ```
 
-## Build
+La aplicación estará disponible en `http://localhost:5173`.
+
+## Build (Producción)
+
+Para generar la versión optimizada para web:
 
 ```bash
-# Build para Windows
-npm run build:win
-
-# Build para macOS
-npm run build:mac
-
-# Build para Linux
-npm run build:linux
-
-# Build para todas las plataformas
+# Construir para web
 npm run build
 ```
+
+Los archivos estáticos se generarán en la carpeta `dist/`, listos para ser desplegados en cualquier servidor web (Vercel, Netlify, Nginx, etc.).
 
 ## Estructura del Proyecto
 
 ```
 AppCheckList-v2/
-├── electron/           # Proceso principal de Electron
-│   ├── main.ts        # Configuración principal
-│   └── preload.ts     # Script de preload
 ├── src/
-│   ├── components/    # Componentes React
-│   │   ├── ui/       # Componentes de shadcn/ui
-│   │   └── theme-provider.tsx
-│   ├── pages/        # Páginas de la aplicación
-│   │   ├── MainMenu.tsx
-│   │   ├── CheckList.tsx
-│   │   └── GuiaDespacho.tsx
-│   ├── lib/          # Utilidades
-│   │   ├── utils.ts
-│   │   └── pdf-generator.ts
-│   ├── App.tsx       # Componente principal
-│   ├── main.tsx      # Punto de entrada
-│   └── index.css     # Estilos globales
-├── public/           # Recursos estáticos
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
+│   ├── components/    # Componentes React reutilizables
+│   │   ├── ui/        # Biblioteca de componentes (shadcn/ui)
+│   ├── pages/         # Vistas principales (CheckList, Informes, etc.)
+│   ├── lib/           # Utilidades y Lógica de Negocio
+│   │   ├── pdf-generator.tsx # Generación de documentos PDF
+│   │   └── toast-utils.tsx   # Sistema de notificaciones
+│   ├── App.tsx        # Router y Layout principal
+│   └── index.css      # Estilos globales y temas
+├── public/            # Recursos estáticos (imágenes, logos)
+├── package.json       # Dependencias y scripts
+└── vite.config.ts     # Configuración de Vite
 ```
-
-## Scripts Disponibles
-
-- `npm run dev` - Inicia el servidor de desarrollo
-- `npm run build` - Construye la aplicación para producción
-- `npm run build:win` - Build para Windows
-- `npm run build:mac` - Build para macOS
-- `npm run build:linux` - Build para Linux
-- `npm run preview` - Preview de la build de producción
 
 ## Próximos Pasos
 
-1. Coloca tus iconos en la carpeta `public/`:
-   - `icon.ico` - Para Windows
-   - `icon.icns` - Para macOS
-   - `icon.png` - Para Linux
-
-2. Personaliza los formularios según tus necesidades específicas
-
-3. Ajusta la generación de PDFs con tu formato preferido
+1. **Despliegue Web**: Subir la carpeta `dist/` a un hosting estático.
+2. **Iconos**: Personalizar `public/favicon.ico` para la pestaña del navegador.
+3. **PWA (Opcional)**: Configurar VitePWA si se desea instalar como aplicación en dispositivos móviles.
 
 ## Licencia
 
