@@ -1,4 +1,4 @@
-# AppCheckList v2
+# AppCheckList
 
 Aplicación de escritorio para gestión de CheckLists de equipos y Guías de Despacho.
 
