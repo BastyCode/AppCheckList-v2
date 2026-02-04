@@ -1,6 +1,6 @@
 {
   "name": "appchecklist-v2",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Aplicación de CheckList y Guías de Despacho",
   "main": "dist-electron/main.js",
   "type": "module",
@@ -30,6 +30,7 @@
     "lucide-react": "^0.336.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.22.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",

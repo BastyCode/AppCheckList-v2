@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useToast } from '@/hooks/use-toast'
+
+import { startPdfCountdown, showErrorToast } from '@/lib/toast-utils'
 import { generateGuiaDespachoPDF } from '@/lib/pdf-generator'
 import { useTheme } from '@/components/theme-provider'
 
@@ -18,7 +19,7 @@ const TECNICOS = [
 export default function GuiaDespacho() {
   const navigate = useNavigate()
   const { theme } = useTheme()
-  const { toast } = useToast()
+
   const [formData, setFormData] = useState({
     // Access Point y Equipos
     accessPoint: '',
@@ -78,29 +79,15 @@ export default function GuiaDespacho() {
     if (!formData.condicion) camposFaltantes.push('Condición del equipo')
     if (!formData.modeloBAM) camposFaltantes.push('Modelo de BAM')
     
+
     if (camposFaltantes.length > 0) {
-      toast({
-        variant: "destructive",
-        title: "Campos obligatorios faltantes",
-        description: `Por favor completa: ${camposFaltantes.join(', ')}`,
-      })
+      showErrorToast(`Faltan campos obligatorios: ${camposFaltantes.join(', ')}`)
       return
     }
     
-    try {
+    await startPdfCountdown(async () => {
       await generateGuiaDespachoPDF({ ...formData, fecha: new Date().toLocaleDateString('es-CL') })
-      toast({
-        title: "PDF generado exitosamente",
-        description: `Guía de despacho para ${formData.accessPoint} creada correctamente`,
-      })
-    } catch (error) {
-      console.error('Error al generar PDF:', error)
-      toast({
-        variant: "destructive",
-        title: "Error al generar PDF",
-        description: "Por favor, intenta nuevamente.",
-      })
-    }
+    })
   }
 
   return (

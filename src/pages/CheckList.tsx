@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useToast } from '@/hooks/use-toast'
+
+import { startPdfCountdown, showErrorToast } from '@/lib/toast-utils'
 import { generateCheckListPDF } from '@/lib/pdf-generator'
 import { useTheme } from '@/components/theme-provider'
 
@@ -20,7 +21,7 @@ const TECNICOS = [
 export default function CheckList() {
   const navigate = useNavigate()
   const { theme } = useTheme()
-  const { toast } = useToast()
+
   const [formData, setFormData] = useState({
     empresa: '',
     nombreEmpresa: '',
@@ -82,40 +83,23 @@ export default function CheckList() {
     if (!formData.equipo) camposFaltantes.push('Equipo')
     if (!formData.tecnico) camposFaltantes.push('Técnico')
     
+
     if (camposFaltantes.length > 0) {
-      toast({
-        variant: "destructive",
-        title: "Campos obligatorios faltantes",
-        description: `Por favor completa: ${camposFaltantes.join(', ')}`,
-      })
+      showErrorToast(`Faltan campos obligatorios: ${camposFaltantes.join(', ')}`)
       return
     }
     
     // Verificar que al menos un item esté realizado
     const itemsRealizados = formData.items.filter(item => item.estado === 'realizado').length
     if (itemsRealizados === 0) {
-      toast({
-        variant: "destructive",
-        title: "Verificaciones pendientes",
-        description: "Debes marcar al menos un item como realizado antes de generar el PDF",
-      })
+      showErrorToast("Debes marcar al menos un item como realizado antes de generar el PDF")
       return
     }
     
-    try {
-      await generateCheckListPDF(formData)
-      toast({
-        title: "PDF generado exitosamente",
-        description: `CheckList de ${formData.equipo} creado correctamente`,
-      })
-    } catch (error) {
-      console.error('Error al generar PDF:', error)
-      toast({
-        variant: "destructive",
-        title: "Error al generar PDF",
-        description: "Por favor, intenta nuevamente.",
-      })
-    }
+    // Use centralized toast handling
+    await startPdfCountdown(async () => {
+        await generateCheckListPDF(formData)
+    })
   }
 
   return (

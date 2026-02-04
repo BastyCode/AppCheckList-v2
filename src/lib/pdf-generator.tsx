@@ -252,12 +252,9 @@ const styles = StyleSheet.create({
 })
 
 // Componentes comunes
-// Componentes comunes
 const SharedHeader = ({ title, subtitle }: { title: string, subtitle?: string }) => (
-  // Regresamos a row, pero alineamos arriba (flex-start) para bajar el título manualmente con margin
   <View style={[styles.headerRow, { alignItems: 'flex-start' }]}>
     <Image src={LOGO_SRC} style={styles.logo} />
-    {/* Contenedor del título desplazado hacia abajo */}
     <View style={{ flex: 1, alignItems: 'center', marginRight: 60, marginTop: 15 }}>
       <Text style={styles.mainTitle}>{title}</Text>
       {subtitle && <Text style={styles.subTitle}>{subtitle}</Text>}
@@ -505,15 +502,16 @@ const InformeDocument = ({ data }: { data: InformeData }) => (
   </Document>
 )
 
-// Funciones de exportación que reemplazan a las antiguas
+// generador de pdf para checklist
 export async function generateCheckListPDF(data: CheckListData) {
   try {
     const blob = await pdf(<ChecklistDocument data={data} />).toBlob()
-    const url = URL.createObjectURL(blob)
+    // Force download by using octet-stream
+    const pdfBlob = new Blob([blob], { type: 'application/octet-stream' })
+    const url = URL.createObjectURL(pdfBlob)
     const link = document.createElement('a')
     link.href = url
     // Formato: Checklist - [Equipo] - [Fecha].pdf
-    // Reemplazar barras por guiones en fecha si vienen
     const safeDate = data.fecha.replace(/\//g, '-')
     const safeEquipo = data.equipo.replace(/[^a-zA-Z0-9\-\s]/g, '')
     link.download = `Checklist - ${safeEquipo} - ${safeDate}.pdf`
@@ -523,14 +521,16 @@ export async function generateCheckListPDF(data: CheckListData) {
     URL.revokeObjectURL(url)
   } catch (error) {
     console.error('Error generando PDF Checklist:', error)
-    alert('Error al generar PDF. Ver consola.')
+    throw error // Propagar error para que el toast lo maneje
   }
 }
 
+// generador de pdf para guia de despacho
 export async function generateGuiaDespachoPDF(data: GuiaDespachoData) {
   try {
     const blob = await pdf(<GuiaDespachoDocument data={data} />).toBlob()
-    const url = URL.createObjectURL(blob)
+    const pdfBlob = new Blob([blob], { type: 'application/octet-stream' })
+    const url = URL.createObjectURL(pdfBlob)
     const link = document.createElement('a')
     link.href = url
     // Formato: Guia Despacho - [AccessPoint] - [Fecha].pdf
@@ -543,14 +543,17 @@ export async function generateGuiaDespachoPDF(data: GuiaDespachoData) {
     URL.revokeObjectURL(url)
   } catch (error) {
     console.error('Error generando PDF Guía:', error)
-    alert('Error al generar PDF. Ver consola.')
+    throw error // Propagar error para que el toast lo maneje
   }
 }
 
+
+// generador de pdf para informe técnico
 export async function generateInformePDF(data: InformeData) {
   try {
     const blob = await pdf(<InformeDocument data={data} />).toBlob()
-    const url = URL.createObjectURL(blob)
+    const pdfBlob = new Blob([blob], { type: 'application/octet-stream' })
+    const url = URL.createObjectURL(pdfBlob)
     const link = document.createElement('a')
     link.href = url
     // Formato: Informe Tecnico - [Equipo] - [Fecha].pdf
@@ -563,6 +566,226 @@ export async function generateInformePDF(data: InformeData) {
     URL.revokeObjectURL(url)
   } catch (error) {
     console.error('Error generando PDF Informe:', error)
-    alert('Error al generar PDF. Ver consola.')
+    throw error // Propagar error para que el toast lo maneje
   }
 }
+
+
+
+// Certificado Access Point
+export interface CertificadoData {
+  empresa: string 
+  fecha: string
+  responsable: string
+  ubicacion: string
+  vigencia: string
+  // Datos equipo
+  accessPointName: string
+  accessPointSerial: string
+  actividades: string[]
+  // Observaciones
+  observaciones: string
+  // Firma
+  nombreTecnico: string
+  firmaTecnico: string
+}
+
+// Estilos específicos para el certificado
+const certStyles = StyleSheet.create({
+  orangeHeader: {
+    backgroundColor: '#ed7d31', // Naranja fuerte
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 10,
+    padding: 4,
+    textAlign: 'left' 
+  },
+  peachRow: {
+    backgroundColor: '#fbe4d5', // Durazno claro para encabezados de tabla superior
+  },
+  lightPeachRow: {
+    backgroundColor: '#fdf1e8', // Durazno muy claro/casi blanco para contenido
+  },
+  blueSectionTitle: {
+    fontSize: 14,
+    color: '#4472c4', 
+    marginTop: 20,
+    marginBottom: 5,
+    fontFamily: 'Helvetica-Bold',
+    fontWeight: 'bold',
+    textTransform: 'uppercase'
+  },
+  // Tabla superior (Fecha, Responsable...)
+  topTable: {
+    width: '80%', 
+    marginBottom: 20,
+    borderWidth: 0.5,
+    borderColor: '#ed7d31'
+  },
+  topTableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ed7d31'
+  },
+  topLabel: {
+    width: '30%',
+    padding: 4,
+    fontSize: 10,
+    fontWeight: 'bold',
+    backgroundColor: '#fbe4d5',
+    color: '#000000'
+  },
+  topValue: {
+    width: '70%',
+    padding: 4,
+    fontSize: 10,
+    backgroundColor: '#fdf1e8',
+    color: '#000000'
+  },
+  // Tabla Actividades
+  activitiesTable: {
+    width: '100%',
+    borderWidth: 0.5,
+    borderColor: '#ed7d31', 
+    marginBottom: 20
+  },
+  activitiesHeaderRow: {
+    flexDirection: 'row',
+    backgroundColor: '#ed7d31',
+  },
+  activitiesContentRow: {
+    flexDirection: 'row',
+    backgroundColor: '#fbe4d5', // Fondo general de la tabla de actividades
+    minHeight: 100 
+  },
+  activitiesCol1: {
+    width: '30%',
+    padding: 8,
+    borderRightWidth: 0.5,
+    borderRightColor: '#ed7d31'
+  },
+  activitiesCol2: {
+    width: '70%',
+    padding: 8
+  },
+  actText: {
+    fontSize: 10,
+    marginBottom: 4,
+    color: '#000000'
+  }
+})
+
+// generador de pdf para certificado
+const CertificadoDocument = ({ data }: { data: CertificadoData }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      
+      {/* Header Personalizado para Certificado*/}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+         <Image src={LOGO_SRC} style={styles.logo} />
+      </View>
+
+      <View style={{ alignItems: 'center', marginBottom: 30 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>CERTIFICADO ACCESSPOINT</Text>
+       
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>“{data.empresa}”</Text>
+      </View>
+
+      {/* Tabla Superior */}
+      <View style={certStyles.topTable}>
+        <View style={certStyles.topTableRow}>
+          <Text style={certStyles.topLabel}>Fecha</Text>
+          <Text style={certStyles.topValue}>{data.fecha}</Text>
+        </View>
+        <View style={certStyles.topTableRow}>
+          <Text style={certStyles.topLabel}>Responsable</Text>
+          <Text style={certStyles.topValue}>{data.responsable}</Text>
+        </View>
+        <View style={certStyles.topTableRow}>
+          <Text style={certStyles.topLabel}>Ubicación</Text>
+          <Text style={certStyles.topValue}>{data.ubicacion}</Text>
+        </View>
+        <View style={[certStyles.topTableRow, { borderBottomWidth: 0 }]}>
+          <Text style={certStyles.topLabel}>Vigencia</Text>
+          <Text style={certStyles.topValue}>{data.vigencia}</Text>
+        </View>
+      </View>
+
+      {/* Actividades Realizadas */}
+      <Text style={certStyles.blueSectionTitle}>ACTIVIDADES REALIZADAS</Text>
+      
+      <View style={certStyles.activitiesTable}>
+        {/* Header Tabla */}
+        <View style={certStyles.activitiesHeaderRow}>
+          <Text style={[certStyles.orangeHeader, { width: '30%' }]}>Equipo</Text>
+          <Text style={[certStyles.orangeHeader, { width: '70%' }]}>Actividades</Text>
+        </View>
+        
+        {/* Contenido Tabla */}
+        <View style={certStyles.activitiesContentRow}>
+          {/* Columna Equipo */}
+          <View style={certStyles.activitiesCol1}>
+            <Text style={[certStyles.actText, { fontWeight: 'bold', marginBottom: 15 }]}>
+              {data.accessPointName}
+            </Text>
+            <Text style={[certStyles.actText, { fontWeight: 'bold' }]}>
+              {data.accessPointSerial}
+            </Text>
+          </View>
+          
+          {/* Columna Actividades */}
+          <View style={certStyles.activitiesCol2}>
+             {data.actividades.map((act, idx) => (
+                <Text key={idx} style={[certStyles.actText, { marginBottom: 8 }]}>
+                  {act}
+                </Text>
+             ))}
+          </View>
+        </View>
+      </View>
+
+      {/* Observaciones */}
+      <Text style={certStyles.blueSectionTitle}>OBSERVACIONES</Text>
+      <Text style={{ fontSize: 10, marginTop: 10, marginBottom: 40 }}>
+        {data.observaciones || 'Se certifica correcto funcionamiento de equipo arriba individualizado'}
+      </Text>
+
+      {/* Firma */}
+      <View style={{ alignItems: 'center', marginTop: 10 }}>
+          {data.firmaTecnico ? (
+            <Image src={data.firmaTecnico} style={styles.signatureImage} />
+          ) : (
+            <View style={{ height: 60 }} />
+          )}
+          <View style={[styles.signatureLine, { backgroundColor: '#808080' }]} /> {/* Línea gris/negra */}
+          <Text style={styles.signatureName}>{data.nombreTecnico}</Text>
+          <Text style={styles.signatureRole}>Servicio Técnico AlertPlus</Text>
+      </View>
+
+      <CurveDecoration />
+      <Footer />
+
+    </Page>
+  </Document>
+)
+export async function generateCertificadoPDF(data: CertificadoData) {
+  try {
+    const blob = await pdf(<CertificadoDocument data={data} />).toBlob()
+    const pdfBlob = new Blob([blob], { type: 'application/octet-stream' })
+    const url = URL.createObjectURL(pdfBlob)
+    const link = document.createElement('a')
+    link.href = url
+    // Formato: Certificado - [AP] - [Fecha].pdf
+    const safeDate = data.fecha.replace(/[^a-zA-Z0-9\-]/g, '-')
+    const safeAP = data.accessPointName.replace(/[^a-zA-Z0-9\-\s]/g, '')
+    link.download = `Certificado - ${safeAP} - ${safeDate}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error generando PDF Certificado:', error)
+    throw error // Propagar error para que el toast lo maneje
+  }
+}
+

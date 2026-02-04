@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
+
+import { startPdfCountdown, showErrorToast } from '@/lib/toast-utils'
 import { generateInformePDF } from '@/lib/pdf-generator'
 import { useTheme } from '@/components/theme-provider'
 
@@ -19,7 +20,7 @@ const TECNICOS = [
 export default function Informes() {
   const navigate = useNavigate()
   const { theme } = useTheme()
-  const { toast } = useToast()
+
   
   const [formData, setFormData] = useState({
     empresa: '',
@@ -114,28 +115,13 @@ export default function Informes() {
     if (!formData.tecnico) camposFaltantes.push('Técnico')
     
     if (camposFaltantes.length > 0) {
-      toast({
-        variant: "destructive",
-        title: "Campos obligatorios faltantes",
-        description: `Por favor completa: ${camposFaltantes.join(', ')}`,
-      })
+      showErrorToast(`Faltan campos obligatorios: ${camposFaltantes.join(', ')}`)
       return
     }
     
-    try {
+    await startPdfCountdown(async () => {
       await generateInformePDF(formData)
-      toast({
-        title: "PDF generado exitosamente",
-        description: `Informe creado correctamente`,
-      })
-    } catch (error) {
-      console.error('Error al generar PDF:', error)
-      toast({
-        variant: "destructive",
-        title: "Error al generar PDF",
-        description: "Por favor, intenta nuevamente.",
-      })
-    }
+    })
   }
 
   return (

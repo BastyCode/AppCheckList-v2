@@ -78,6 +78,7 @@ export default function MainMenu() {
           </CardContent>
         </Card>
 
+
         <Card 
           className="cursor-pointer transition-all duration-300 hover:border-red-600 dark:hover:border-white hover:shadow-md hover:shadow-red-500/20 hover:scale-[1.005] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
           onClick={() => navigate('/informes')}
@@ -93,6 +94,25 @@ export default function MainMenu() {
           <CardContent className="text-center pt-0">
             <CardDescription className="text-sm text-gray-600 dark:text-gray-200">
               Generación de informes técnicos
+            </CardDescription>
+          </CardContent>
+        </Card>
+
+        <Card 
+          className="cursor-pointer transition-all duration-300 hover:border-red-600 dark:hover:border-white hover:shadow-md hover:shadow-red-500/20 hover:scale-[1.005] border border-gray-200 dark:border-red-600 bg-white dark:bg-black"
+          onClick={() => navigate('/certificados')}
+        >
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center bg-orange-50 rounded-xl" style={{ width: '96px', height: '96px' }}>
+                <img src="/icons/clipboard.svg" alt="Certificados Icon" className="h-16 w-16 text-orange-500" />
+              </div>
+            </div>
+            <CardTitle className="text-center text-xl font-bold text-gray-900 dark:text-white">Certificados AccessPoint</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center pt-0">
+            <CardDescription className="text-sm text-gray-600 dark:text-gray-200">
+              Certificados de instalación y funcionamiento
             </CardDescription>
           </CardContent>
         </Card>
