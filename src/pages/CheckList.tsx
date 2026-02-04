@@ -38,7 +38,7 @@ export default function CheckList() {
       { id: 4, nombre: 'Prueba de conexión por RJ45 (RED)', estado: 'pendiente' as ItemStatus },
       { id: 5, nombre: 'Verificar conexión unica a BAM de AP', estado: 'pendiente' as ItemStatus },
       { id: 6, nombre: 'Prueba de funcionamiento VTS', estado: 'pendiente' as ItemStatus },
-      { id: 7, nombre: 'Prueba funcionamiento Aplicación AccurePoint', estado: 'pendiente' as ItemStatus },
+      { id: 7, nombre: 'Prueba funcionamiento Aplicación AccessPoint', estado: 'pendiente' as ItemStatus },
       { id: 8, nombre: '10 evaluaciones de prueba con resultado Normal/leve y respaldar con fotos', estado: 'pendiente' as ItemStatus },
       { id: 9, nombre: 'Configurar fecha y hora', estado: 'pendiente' as ItemStatus },
       { id: 10, nombre: 'Verificación de resultado en AMFS', estado: 'pendiente' as ItemStatus },
