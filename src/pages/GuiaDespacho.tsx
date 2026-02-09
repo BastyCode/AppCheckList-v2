@@ -43,7 +43,7 @@ export default function GuiaDespacho() {
     direccion: '',
     telefono: '',
     // Datos Responsable
-    empresa: '', // Para cumplir con la interfaz (Cliente)
+    empresa: '', 
     responsableEmpresa: 'AlertPlus',
     nombreTecnico: '',
     tecnico: '',
@@ -92,14 +92,14 @@ export default function GuiaDespacho() {
 
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-black">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         {/* Logo superior izquierda */}
         <div className="mb-6">
           <div className="mb-4">
             <img 
               src={`${import.meta.env.BASE_URL}alertPlus.png`} 
               alt="Alert Plus" 
-              className="h-12 w-auto"
+              className="w-auto h-12"
               style={{ filter: theme === 'dark' ? 'drop-shadow(0 0 8px #DC2626)' : 'none' }}
             />
           </div>
@@ -107,38 +107,38 @@ export default function GuiaDespacho() {
           <Button 
             variant="outline" 
             onClick={() => navigate('/')}
-            className="border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-red-600 dark:text-white dark:hover:bg-red-900"
+            className="text-gray-700 border-gray-300 hover:bg-gray-100 dark:border-red-600 dark:text-white dark:hover:bg-red-900"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Volver al menú
           </Button>
         </div>
 
         {/* Título principal */}
-        <div className="mb-6 border border-gray-200 bg-white rounded-lg p-6 dark:border-red-600 dark:bg-black">
+        <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg dark:border-red-600 dark:bg-black">
           <h1 className="text-3xl font-bold text-red-600 dark:text-red-500">Guías de Despacho</h1>
         </div>
 
-        <Card className="border border-gray-200 dark:border-red-600 bg-white dark:bg-black">
-          <CardHeader className="space-y-0 p-0">
+        <Card className="bg-white border border-gray-200 dark:border-red-600 dark:bg-black">
+          <CardHeader className="p-0 space-y-0">
             <div className="bg-red-600 text-white pl-8 pr-4 py-4 rounded-t-[12px]">
               <h2 className="text-lg font-bold">Alert Plus</h2>
               <p className="text-sm font-normal">Solicitud de Guía de Despacho</p>
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-6 pt-6">
+          <CardContent className="pt-6 space-y-6">
             {/* Sección 1: Access Point y Equipos */}
             <div className="space-y-4">
-              <h3 className="text-base font-bold border-b-2 border-gray-800 pb-2">1. Access Point y Equipos</h3>
+              <h3 className="pb-2 text-base font-bold border-b-2 border-gray-800">1. Access Point y Equipos</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="accessPoint" className="text-xs dark:text-white">Access Point (APxx)</Label>
                   <Input
                     id="accessPoint"
                     placeholder="Ej: AP001, APT23"
-                    className="border-gray-300 dark:border-red-600 bg-white dark:bg-black text-gray-900 dark:text-white"
+                    className="text-gray-900 bg-white border-gray-300 dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.accessPoint}
                     onChange={(e) => setFormData({ ...formData, accessPoint: e.target.value })}
                   />
@@ -147,7 +147,7 @@ export default function GuiaDespacho() {
                   <Label htmlFor="condicion" className="text-xs dark:text-white">Condición</Label>
                   <select
                     id="condicion"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.condicion}
                     onChange={(e) => setFormData({ ...formData, condicion: e.target.value })}
                   >
@@ -162,8 +162,8 @@ export default function GuiaDespacho() {
                   <Label htmlFor="serieAccessPoint" className="text-xs dark:text-white">N° de serie Access Point</Label>
                   <Input
                     id="serieAccessPoint"
-                    placeholder="Ej: 732000000520"
-                    className="border-gray-300 dark:border-red-600 bg-white dark:bg-black text-gray-900 dark:text-white"
+                    placeholder="Ej: 767000000520"
+                    className="text-gray-900 bg-white border-gray-300 dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.serieAccessPoint}
                     onChange={(e) => setFormData({ ...formData, serieAccessPoint: e.target.value })}
                   />
@@ -172,13 +172,13 @@ export default function GuiaDespacho() {
                   <Label htmlFor="estructuraMetalica" className="text-xs dark:text-white">Estructura metálica</Label>
                   <select
                     id="estructuraMetalica"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.estructuraMetalica}
                     onChange={(e) => setFormData({ ...formData, estructuraMetalica: e.target.value })}
                   >
                     <option value="">Seleccionar...</option>
-                    <option value="si">Sí</option>
-                    <option value="no">No</option>
+                    <option value="Lata chica Stout">Lata chica Stout</option>
+                    <option value="Lata blanca">Lata blanca</option>
                   </select>
                 </div>
 
@@ -205,13 +205,14 @@ export default function GuiaDespacho() {
                   <Label htmlFor="modeloBAM" className="text-xs dark:text-white">MODELO DE BAM</Label>
                   <select
                     id="modeloBAM"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.modeloBAM}
                     onChange={(e) => setFormData({ ...formData, modeloBAM: e.target.value })}
                   >
                     <option value="">Seleccionar modelo...</option>
-                    <option value="bam_v1">BAM V1</option>
-                    <option value="bam_v2">BAM V2</option>
+                    <option value="bam_v1">ZTE</option>
+                    <option value="bam_v2">ENTEL</option>
+                    <option value="bam_v2">BAM ROJA</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -228,7 +229,7 @@ export default function GuiaDespacho() {
                   <Label htmlFor="compania" className="text-xs dark:text-white">COMPAÑÍA</Label>
                   <select
                     id="compania"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.compania}
                     onChange={(e) => setFormData({ ...formData, compania: e.target.value })}
                   >
@@ -262,7 +263,7 @@ export default function GuiaDespacho() {
                   <Label htmlFor="impresoraModelo" className="text-xs dark:text-white">Impresora - Modelo</Label>
                   <select
                     id="impresoraModelo"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.impresoraModelo}
                     onChange={(e) => setFormData({ ...formData, impresoraModelo: e.target.value })}
                   >
@@ -304,15 +305,15 @@ export default function GuiaDespacho() {
             </div>
 
             {/* Sección Responsable */}
-            <div className="space-y-4 pt-4 border-t">
+            <div className="pt-4 space-y-4 border-t">
               <h3 className="text-base font-bold">Datos del Responsable</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="responsableEmpresa" className="text-xs dark:text-white">Empresa</Label>
                   <select
                     id="responsableEmpresa"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.responsableEmpresa}
                     onChange={(e) => {
                       const nuevaEmpresa = e.target.value
@@ -335,7 +336,7 @@ export default function GuiaDespacho() {
                   <Label htmlFor="tecnico" className="text-xs dark:text-white">Nombre técnico</Label>
                   <select
                     id="tecnico"
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-red-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white"
+                    className="flex w-full h-10 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-md dark:border-red-600 dark:bg-black dark:text-white"
                     value={formData.tecnico}
                     onChange={(e) => handleTecnicoChange(e.target.value)}
                   >
@@ -357,12 +358,12 @@ export default function GuiaDespacho() {
                   {/* Lógica para subir firma si es Praveni/Jeffry */}
                   {formData.responsableEmpresa === 'Praveni' && formData.tecnico === 'Jeffry Flores' && !formData.firmaTecnico && (
                     <div className="mb-2">
-                       <label className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-red-600 rounded-md p-4 bg-gray-50/50 dark:bg-black hover:bg-gray-100 dark:hover:bg-red-900/10 transition-colors">
-                        <Upload className="h-6 w-6 text-gray-500 dark:text-red-500 mb-2" />
+                       <label className="flex flex-col items-center justify-center p-4 transition-colors border-2 border-gray-300 border-dashed rounded-md cursor-pointer dark:border-red-600 bg-gray-50/50 dark:bg-black hover:bg-gray-100 dark:hover:bg-red-900/10">
+                        <Upload className="w-6 h-6 mb-2 text-gray-500 dark:text-red-500" />
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           Haz click para subir la firma
                         </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                           (Formatos: JPG, PNG)
                         </span>
                          <input 
@@ -388,18 +389,18 @@ export default function GuiaDespacho() {
                   )}
 
                   {formData.firmaTecnico ? (
-                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex flex-col items-center justify-center h-24 relative">
+                    <div className="relative flex flex-col items-center justify-center h-24 p-2 border border-gray-300 rounded-md dark:border-red-600 bg-gray-50 dark:bg-black">
                       <img 
                         src={formData.firmaTecnico} 
                         alt="Firma" 
-                        className="max-h-16 object-contain"
+                        className="object-contain max-h-16"
                       />
                       {/* Botón para borrar firma si es manual */}
                       {formData.responsableEmpresa === 'Praveni' && (
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="absolute top-1 right-1 h-6 w-6 p-0"
+                          className="absolute w-6 h-6 p-0 top-1 right-1"
                           onClick={() => setFormData(prev => ({ ...prev, firmaTecnico: '' }))}
                         >
                           X
@@ -407,7 +408,7 @@ export default function GuiaDespacho() {
                       )}
                     </div>
                   ) : (
-                    <div className="border border-gray-300 dark:border-red-600 rounded-md p-2 bg-gray-50 dark:bg-black flex items-center justify-center h-20">
+                    <div className="flex items-center justify-center h-20 p-2 border border-gray-300 rounded-md dark:border-red-600 bg-gray-50 dark:bg-black">
                       <span className="text-xs text-gray-500 dark:text-white">
                         {formData.responsableEmpresa === 'Praveni' ? 'Sube la firma' : 'Selecciona un técnico'}
                       </span>
@@ -418,10 +419,10 @@ export default function GuiaDespacho() {
             </div>
 
             {/* Sección 2: Datos de Recepción */}
-            <div className="space-y-4 pt-4 border-t">
+            <div className="pt-4 space-y-4 border-t">
               <h3 className="text-base font-bold">Datos de Recepción</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="nombreReceptor" className="text-xs dark:text-white">Nombre</Label>
                   <Input
@@ -465,7 +466,7 @@ export default function GuiaDespacho() {
               <Button 
                 onClick={handleGeneratePDF} 
                 size="lg"
-                className="w-full md:w-auto bg-gray-400 hover:bg-gray-500"
+                className="w-full bg-gray-400 md:w-auto hover:bg-gray-500"
               >
                 Generar PDF
               </Button>
